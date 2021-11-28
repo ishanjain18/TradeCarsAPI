@@ -21,6 +21,7 @@ def listings(request, **kwargs):
     # sample API endpoint to fetch data -> http://127.0.0.1:8000/listings?companies=1,4,5&model=248,249&year=2002,2021
     
     for entry in listings.values():
+        id = entry['id']
         make_name = Companies.objects.get(pk=entry['make_id']).name
         car_name = Cars.objects.get(pk=entry['model_name_id']).name
         seller_obj = Sellers.objects.get(pk=entry['seller_id'])
@@ -31,6 +32,7 @@ def listings(request, **kwargs):
         max_price = entry['max_price']
 
         listing_data.append({
+            'id': id,
         'make_name' : make_name,
         'car_name' : car_name,
         'seller_name' : seller_name,
@@ -39,10 +41,8 @@ def listings(request, **kwargs):
         'min_price' : min_price,
         'max_price' : max_price
         })
-
-    data = {'results': listing_data}
     
-    return JsonResponse(data)
+    return JsonResponse(listing_data, safe=False)
 
 def add_listing(request):
 
@@ -51,7 +51,7 @@ def add_listing(request):
         data = json.loads(request.body)
         # format of JSON data in POST request
         # data = {
-        #         "make_name" : "Chrysler",
+        #         "make_name" : "primary key of company",
         #         "car_name": "Voyager",
         #         "seller_name" : "momo",
         #         "seller_email": "momo@example.com",
@@ -69,7 +69,7 @@ def add_listing(request):
             seller_id = Sellers.objects.get(name=data["seller_name"])
 
 
-        make_id = Companies.objects.get(name=data['make_name'])
+        make_id = Companies.objects.get(pk=int(data['make_name']))
         model_id = Cars.objects.get(name=data['car_name'])
         year = data['purchase_year']
         lo = data['min_price']
