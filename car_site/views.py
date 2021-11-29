@@ -49,6 +49,7 @@ def add_listing(request):
     
     if request.method == "POST":
         data = json.loads(request.body)
+        print(data)
         # format of JSON data in POST request
         # data = {
         #         "make_name" : "primary key of company",
@@ -70,7 +71,7 @@ def add_listing(request):
 
 
         make_id = Companies.objects.get(pk=int(data['make_name']))
-        model_id = Cars.objects.get(name=data['car_name'])
+        model_id = Cars.objects.get(pk=int(data['car_name']))
         year = data['purchase_year']
         lo = data['min_price']
         hi = data['max_price']
